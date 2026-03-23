@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>FPCheckout Demo Documentation</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="styles.css" rel="stylesheet" />
+    </head>
+
+    <body>
+
+        <div class="container" id="container">
+            
+            <div class="form-container sign-in-container">
+                <form>
+                    <h1>Checkout</h1>
+                    <span>Enter your payment details below</span>
+                    <input type="email" id="email" value="d@d.com" placeholder="Email" />
+                    <input type="names" id="names" value="Adedeji Richards" placeholder="Names" />
+                    <input type="phone" id="phone" value="08065627281" placeholder="Phone number" />
+                    <hr>
+                    <input type="amount" id="amount" value="200" placeholder="0.00" />
+                    <button type="button" id="paynow">Pay now</button>
+                </form>
+            </div>
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-right">
+                        <h1>Hello, Friend!</h1>
+                        <p>Enter your payment details to get you started with FP checkout.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <div id="PaymentContainer"></div>
+    <script defer  type="text/javascript" src="https://libraries.fountainpay.ng/inline.js" type="javascript"></script>
+    <script>
+        window.addEventListener('load', (event) => {
+            const paynowButton = document.getElementById('paynow');
+            const container = document.getElementById('container');
+            
+            paynowButton.addEventListener('click', () => {
+                var names=document.getElementById('names').value;
+                const email=document.getElementById('email').value;
+                const phone=document.getElementById('phone').value;
+                const amount=document.getElementById('amount').value;
+                names=names? names.split(" "): names;
+                paymentNowHandler({names, email, phone, amount});
+            });
+            
+            function paymentNowHandler(args){
+                Fountainpay.setup({
+                    publicKey: 'FP-PUBK-6342173854511697650308911',
+                    tnxRef: ''+Math.floor((Math.random() * 1000000000) + 1),
+                    amount:args.amount,
+                    currency: 'NGN',
+                    channels: ['card', 'directDebit', 'qrcode', 'qrcode'],
+                    // webhookUrl:'https://www.google.com',
+                    // redirectUrl:'https://www.yahoo.com',
+                    customer: {
+                        email: args.email,
+                        phoneNo: args.phone,
+                        lastName: args.names[0],
+                        otherName: args.names[1] || ""
+                    },
+
+                    metadata:{
+                        container: "",
+                        minimized: false,
+                        theme: {
+                            disableDarkMode: false,
+                            mode: 'light'
+                        }
+                    },
+                    callback: (function(response){
+                        // alert(response.tnxRef)
+                    }),
+                    close: (function(error){
+                        alert(error)
+                    })
+                }) 
+            }
+            
+
+        });
+        
+    </script>
+</html>
